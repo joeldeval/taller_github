@@ -1,0 +1,22 @@
+{
+  "name": "express",
+  "version": "1.0.0",
+  "description": "hola mundo con express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeldeval/taller_github.git"
+  },
+  "author": "Joel Bioxor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joeldeval/taller_github/issues"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "homepage": "https://github.com/joeldeval/taller_github#readme"
+}
