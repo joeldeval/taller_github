@@ -8,7 +8,8 @@ var http = require('http'),
 http.createServer(function(req, res){
 
 	fs.readFile("./index.html", function(err, html){
-		res.write(html);
+		res.writeHead(200,{"Content-Type":"application/json"})
+		res.write(JSON.stringify({nombre: "Joel", username: "joel"}));
 		res.end();
 	});
 	
