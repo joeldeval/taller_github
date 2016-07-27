@@ -11,7 +11,6 @@ http.createServer(function(req, res){
 	if(req.url.indexOf("favicon.ico") > 0){ return; }
 
 
-
 	fs.readFile("./index.html", function(err, html){
 		
 		var nombre = "";
