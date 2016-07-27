@@ -16,8 +16,10 @@
     "url": "https://github.com/joeldeval/taller_github/issues"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.13.3",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "mongoose": "^4.5.7"
   },
   "homepage": "https://github.com/joeldeval/taller_github#readme"
 }
