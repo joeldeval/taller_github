@@ -1,7 +1,20 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
 var app = express();
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+mongoose.connect('mongodb://localhost:27017/fotos');
+
+var userSchemaJSON = {
+	email:String,
+	password:String
+};
+
+var user_schema = new Schema(userSchemaJSON);
+
+var User = mongoose.model('User', user_schema);
+
 
 app.use('/public',express.static('public')); // archivos estaticos que no cambian.. js, img, css
 
@@ -19,12 +32,19 @@ app.get('/', function(req, res){
 });
 
 app.get('/login', function(req,res){
-	res.render('login');
+	User.find(function(err,doc){
+		console.log(doc);
+		res.render('login');
+
+	});
 });
 
 app.post('/users', function(req,res){
-	console.log(req.body.password); // body es un objeto que obtiene los parametros que se envian desde la vista
-	res.send("recibimos tus datos")
+	var user = new User({email: req.body.email, password: req.body.password});
+
+	user.save(function(){
+		res.send("guardamos tus datos");
+	});
 });
 
 app.listen(3131);
