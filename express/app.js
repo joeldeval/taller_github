@@ -6,10 +6,18 @@ var session = require('express-session');
 var app = express();
 
 app.use('/public',express.static('public')); // archivos estaticos que no cambian.. js, img, css
-
 // leer parametros 
 app.use(bodyParser.json()); // para peticiones application/json 
 app.use(bodyParser.urlencoded({extended:true})); // define que algoritmo hara el parser
+
+/* /app */
+/* /  */
+
+app.use(session({
+	secret: "132dasdasuyghbjh123d",
+	resave: false,
+	saveUninitialized: false
+}));
 
 app.set('view engine', 'jade');
 
@@ -17,6 +25,7 @@ app.set('view engine', 'jade');
 // Método Http => get / post  / PUT / patch / delete
 
 app.get('/', function(req, res){
+	console.log(req.session.user_id);
 	res.render("index");
 });
 
@@ -55,8 +64,8 @@ app.post('/users', function(req,res){
 app.post('/sessions', function(req,res){
 
 
-	User.findOne({email: req.body.email, password: req.body.password},function(err, docs){
-		console.log(docs);
+	User.findOne({email: req.body.email, password: req.body.password},function(err, user){
+		req.session.user_id = user._id;
 		res.send('hola');
 	});
 
