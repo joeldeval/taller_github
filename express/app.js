@@ -1,9 +1,12 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var User = require('./models/user').User;
-var session = require('express-session');
+var cookieSession = require('cookie-session');
 var router_app = require('./routes_app');
 var session_middleware = require('./middlewares/session');
+
+var methodOverride = require('method-override');
+
 
 var app = express();
 
@@ -12,13 +15,21 @@ app.use('/public',express.static('public')); // archivos estaticos que no cambia
 app.use(bodyParser.json()); // para peticiones application/json 
 app.use(bodyParser.urlencoded({extended:true})); // define que algoritmo hara el parser
 
+app.use(methodOverride('_method'));
+// app.use(methodOverride(function(req,res){
+// 	if(req.body && typeof req.body === 'object'&&'_method' in req.body){
+// 		var methos = req.body._method;
+// 		delete req.body._method;
+// 		return method;
+// 	}
+// }));
 /* /app */
 /* /  */
 
-app.use(session({
-	secret: "132dasdasuyghbjh123d",
-	resave: false,
-	saveUninitialized: false
+// parametros para transferir datos entre cliente y servidor
+app.use(cookieSession({
+	name: 'session',
+	keys: ['llave-1', 'llave-2']
 }));
 
 app.set('view engine', 'jade');
