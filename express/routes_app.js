@@ -1,5 +1,6 @@
 var express = require('express');
 var Imagen = require('./models/imagenes');
+var fs = require('fs');
 // rutas modulares
 var router = express.Router();
 
@@ -34,14 +35,65 @@ router.route('/imagenes/:id')
 		res.render('app/imagenes/show');
 	})
 	.put(function(req,res){
-		res.locals.imagen.title = req.body.title;
-		res.locals.imagen.save(function(err){
-			if(!err){
-				res.render('app/imagenes/show');
-			}else{
-				res.render('app/imagenes/'+req.params.id+'/edit')
-			}
-		})
+		// edita la imágen
+		if(req.files.archivo.name === ''){
+			res.locals.imagen.title = req.body.title;
+			res.locals.imagen.save(function(err){
+				if(!err){
+					res.render('app/imagenes/show');
+				}else{
+					res.render('app/imagenes/'+req.params.id+'/edit')
+				}
+			})
+		}else{
+			var pathActual = './public/images/' + res.locals.imagen.path;
+
+			fs.exists(pathActual, (exists) => {
+			  console.log(exists ? 'it\'s there' : 'no passwd!');
+			  
+			  if(exists){
+			  	fs.unlink(pathActual, function(err){
+		  			if (err){
+		                	res.send(err);
+		                	return
+		                }
+			  	});
+			  }
+
+			});
+			var path = req.files.archivo.path;
+			var newPath = './public/images/' + req.files.archivo.name;
+
+			if (req.files.archivo.type.indexOf('image')==-1){
+	                res.send('El fichero que deseas subir no es una imagen');
+	    	} else {
+	    		 // Movemos el fichero temporal tmp_path al directorio que hemos elegido en target_path
+		        fs.rename(path, newPath, function(err) {
+		            if (err){
+		                	res.send(err);
+		                	return
+		                } 
+			            // Eliminamos el fichero temporal
+			            fs.unlink(path, function() {
+			                if (err){
+			                	res.send(err);
+			                	return
+		                } 
+
+						res.locals.imagen.title = req.body.title;
+						res.locals.imagen.path = req.files.archivo.name;
+						res.locals.imagen.save(function(err){
+							if(!err){
+								res.render('app/imagenes/show');
+							}else{
+								res.render('app/imagenes/'+req.params.id+'/edit')
+							}
+						})
+		            });
+		         });
+		     }
+		 }
+
 	})
 	.delete(function(req,res){
 		// elimina imagen
@@ -66,19 +118,45 @@ router.route('/imagenes')
 		});
 	})
 	.post(function(req,res){ // crea una imagen
-		var data = {
-			title: req.body.title
-		}
 
-		var imagen = new Imagen(data);
+		var path = req.files.archivo.path;
+		var newPath = './public/images/' + req.files.archivo.name;
 
-		imagen.save(function(err){
-			if(!err){
-				res.redirect('app/imagenes/'+imagen._id);
-			}else{
-				res.render(err);
-			}
-		});
+		if (req.files.archivo.type.indexOf('image')==-1){
+                res.send('El fichero que deseas subir no es una imagen');
+    	} else {
+    		 // Movemos el fichero temporal tmp_path al directorio que hemos elegido en target_path
+	        fs.rename(path, newPath, function(err) {
+	            if (err){
+	                	res.send(err);
+	                	return
+	                } 
+		            // Eliminamos el fichero temporal
+		            fs.unlink(path, function() {
+		                if (err){
+		                	res.send(err);
+		                	return
+	                } 
+	                console.log('paso el error')
+
+	                var data = {
+						title: req.body.title,
+						path: req.files.archivo.name
+					}
+
+					var imagen = new Imagen(data);
+
+					imagen.save(function(err){
+						if(!err){
+							res.redirect('/app/imagenes/'+imagen._id);
+						}else{
+							res.render(err);
+						}
+					});
+	            });
+	         });
+	     }
+
 	});
 
 module.exports = router;

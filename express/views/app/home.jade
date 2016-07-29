@@ -1,4 +1,8 @@
-extends ../layout.jade
+extends ../layoutSession.jade
 
 block contenido
-	p Hola #{user.email}
+	div(class="container")
+		p Hola #{user.email}
+		div(class="col-md-6 remove-float center-block big-top-space text-center")
+			h4 Podrá subir sus imágenes en éste sistema dando click 
+			a(href="/app/imagenes/new", class="btn btn-primary") Aqui
