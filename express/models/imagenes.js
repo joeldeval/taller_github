@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 // mongoose.connect('mongodb://localhost:27017/fotos');
 
 var img_schema = new Schema({
-	title:{type:String, required:true}
+	title:{type:String, required:true},
+	path: String
 
 });
 

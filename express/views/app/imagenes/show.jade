@@ -1,4 +1,11 @@
-extends ../../layout.jade
+extends ../../layoutSession.jade
 
 block contenido
-	h1= imagen.title
+	div(class="container")
+		div(class="col-md-6 remove-float center-block top-space text-center")
+			h1= imagen.title
+			img(src='/public/images/#{imagen.path}')
+			br 
+			br
+			a(href="/app/imagenes", class="btn btn-primary") Continuar
+	
